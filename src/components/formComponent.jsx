@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
 import ImagePreview from './imagePreview';
+
 function FormComponent() {
-    const [pdfPreview, setPdfPreview] = useState(null);
+    const [pdfPreviews, setPdfPreviews] = useState([]);
     const [pdfError, setPdfError] = useState('');
 
     const handleFileChange = (e) => {
-        const selectedFile = e.target.files[0];
-        if (selectedFile) {
-            if (selectedFile.type === 'application/pdf') {
-                const fileUrl = URL.createObjectURL(selectedFile);
-                setPdfPreview(fileUrl);
-                setPdfError('');
-            } else {
-                setPdfPreview(null);
-                setPdfError('Please select a valid PDF file');
-            }
+        const selectedFiles = Array.from(e.target.files);
+        const pdfFiles = selectedFiles.filter(file => file.type === 'application/pdf');
+
+        if (pdfFiles.length > 0) {
+            const fileUrls = pdfFiles.map(file => URL.createObjectURL(file));
+            setPdfPreviews(fileUrls);
+            setPdfError('');
         } else {
-            setPdfPreview(null);
-            setPdfError('Please select a file');
+            setPdfPreviews([]);
+            setPdfError('Please select valid PDF files');
         }
     };
 
@@ -28,21 +26,22 @@ function FormComponent() {
 
     return (
         <>
-            <h1>Upload a PDF file</h1>
+            <h1>Upload PDF files</h1>
             <form className='form-group' onSubmit={handleSubmit}>
                 <input
                     type="file"
                     className='form-control'
                     accept="application/pdf"
                     onChange={handleFileChange}
+                    multiple
                 />
-                {pdfError && <div className='error-msg'>{pdfError}</div>}
+                {pdfError && <div style={{ color: 'red' }}>{pdfError}</div>}
                 <br />
                 <button type="submit" className='btn btn-success btn-lg'>
                     UPLOAD
                 </button>
             </form>
-            <ImagePreview pdfPreview={pdfPreview} />
+            <ImagePreview pdfPreviews={pdfPreviews} />
         </>
     );
 }
