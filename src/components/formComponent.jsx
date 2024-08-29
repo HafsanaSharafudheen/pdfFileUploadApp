@@ -1,44 +1,50 @@
 import React, { useState } from 'react';
-
+import ImagePreview from './imagePreview';
 function FormComponent() {
-  const [selectedFile, setSelectedFile] = useState();
-  const[isSelected, setIsSelected]= useState(false) 
-  const handleChange = (event) => {
-		setSelectedFile(event.target.files[0]);
-		setIsSelected(true);
-	};
-  const handleSubmit = () => {
-    if(isSelected=== true){
-       alert("File uploded");
-    } else{
-       alert("upload a file");
-    }
- };
-   return (
-    <>
-     <form>
-    <h2>Upload a file</h2>
-			<input type="file" name="file" onChange={handleChange} />
-			{isSelected ? (
-				<div>
-                    <h2>File Details</h2>
-					<p>Filename: {selectedFile.name}</p>
-					<p>Filetype: {selectedFile.type}</p>
-					<p>Size in bytes: {selectedFile.size}</p>
-					<p>
-						lastModifiedDate:{' '}
-						{selectedFile.lastModifiedDate.toLocaleDateString()}
-					</p>
-				</div>
-			) : (
-				<p>Select a file to show details</p>
-			)}
-			<div>
-				<button onClick={handleSubmit}>Submit</button>
-			</div>
-		</form>
-  </>
-  );
+    const [pdfPreview, setPdfPreview] = useState(null);
+    const [pdfError, setPdfError] = useState('');
+
+    const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+            if (selectedFile.type === 'application/pdf') {
+                const fileUrl = URL.createObjectURL(selectedFile);
+                setPdfPreview(fileUrl);
+                setPdfError('');
+            } else {
+                setPdfPreview(null);
+                setPdfError('Please select a valid PDF file');
+            }
+        } else {
+            setPdfPreview(null);
+            setPdfError('Please select a file');
+        }
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        alert('Form submitted');
+    };
+
+    return (
+        <>
+            <h1>Upload a PDF file</h1>
+            <form className='form-group' onSubmit={handleSubmit}>
+                <input
+                    type="file"
+                    className='form-control'
+                    accept="application/pdf"
+                    onChange={handleFileChange}
+                />
+                {pdfError && <div className='error-msg'>{pdfError}</div>}
+                <br />
+                <button type="submit" className='btn btn-success btn-lg'>
+                    UPLOAD
+                </button>
+            </form>
+            <ImagePreview pdfPreview={pdfPreview} />
+        </>
+    );
 }
 
 export default FormComponent;
