@@ -19,9 +19,9 @@ function Login() {
 
     return (
         <div className="loginContainer">
-            <h1>Login</h1>
-            <form className="form-group" onSubmit={handleSubmit}>
-                <div className="mb-3">
+<h1 className="text-center">LOGIN</h1>
+<form className="form-group mb-3" onSubmit={handleSubmit}>
+                <div className="mb-3 p-2">
                     <label htmlFor="email" className="form-label">Email address</label>
                     <input
                         type="email"
@@ -32,7 +32,7 @@ function Login() {
                         required
                     />
                 </div>
-                <div className="mb-3">
+                <div className="mb-3 p-2">
                     <label htmlFor="password" className="form-label">Password</label>
                     <input
                         type="password"
@@ -44,8 +44,11 @@ function Login() {
                     />
                 </div>
                 {error && <div className="alert alert-danger">{error}</div>}
+                <div className='d-flex  justify-content-center'>
                 <button type="submit" className="btn btn-primary">Login</button>
-                <p>
+
+                </div>
+                <p className='text-center mt-3'>
                     New user? <a href="/signup">Create an account</a>
                 </p>
             </form>

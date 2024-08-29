@@ -1,29 +1,45 @@
 import React, { useState, FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Signup: React.FC = () => {
+    const [fullName, setFullName] = useState<string>('');
+
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [error, setError] = useState<string>('');
-
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+const navigate=useNavigate()
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (email === '' || password === '' || confirmPassword === '') {
+        if (fullName=== ''||email === '' || password === '' || confirmPassword === '') {
             setError('Please fill in all fields');
         } else if (password !== confirmPassword) {
             setError('Passwords do not match');
         } else {
             setError('');
-            alert('Signup successful');
-            // Perform signup action here
+            const url = `/signup/signup?email=${email}`;
+             await axios.post(url);
+
+            navigate('/')
         }
     };
 
     return (
         <>
-        <div className="container">
-            <h1>Signup</h1>
-            <form className="form-group" onSubmit={handleSubmit}>
+        <div className="loginContainer">
+        <h1 className="text-center">SIGNUP</h1>
+        <form className="form-group" onSubmit={handleSubmit}>
+        <div className="mb-3">
+                    <label htmlFor="fullName" className="form-label">FullName</label>
+                    <input
+                        type="fullName"
+                        className="form-control"
+                        id="fullName"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        required
+                    />
+                </div>
                 <div className="mb-3">
                     <label htmlFor="email" className="form-label">Email address</label>
                     <input
@@ -58,7 +74,10 @@ const Signup: React.FC = () => {
                     />
                 </div>
                 {error && <div className="alert alert-danger">{error}</div>}
+                <div className='d-flex  justify-content-center'>
+
                 <button type="submit" className="btn btn-primary">Signup</button>
+                </div>
             </form>
         </div>
         </>
