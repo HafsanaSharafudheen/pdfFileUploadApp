@@ -9,26 +9,30 @@ interface ImagePreviewProps {
 }
 
 function ImagePreview({ pdfPreview, setSelectedPages }: ImagePreviewProps): React.JSX.Element {
-    const [numPages, setNumPages] = useState<number | null>(null);
-    const [viewPage, setViewPage] = useState<number | null>(null);
-
+    const [numPages, setNumPages] = useState<number | null>(null);//total number of pages in the PDF
+    const [viewPage, setViewPage] = useState<number | null>(null);//current page in larger size
+//once the document is loaded set the total number of pages
     const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
         setNumPages(numPages);
     };
 
     const handlePageSelection = (pageNumber: number) => {
         setSelectedPages(prev => {
+            //create a set to add the selected pages so that it is unique
             const newSelection = new Set(prev);
             if (newSelection.has(pageNumber)) {
+                   // If the page is already selected, remove it
                 newSelection.delete(pageNumber);
             } else {
+                  // If the page is not selected, add it
                 newSelection.add(pageNumber);
             }
             return newSelection;
         });
     };
-
+//function call in small inage to view large siwe image
     const handlePageClick = (pageNumber: number) => {
+        //set the page number to view
         setViewPage(pageNumber);
     };
 
@@ -42,6 +46,7 @@ function ImagePreview({ pdfPreview, setSelectedPages }: ImagePreviewProps): Reac
                             file={pdfPreview}
                             onLoadSuccess={onDocumentLoadSuccess}
                         >
+                            {/* render all the samll images  array.from creates an array of pagenumbers from the total page numbers */}
                             {numPages && Array.from(new Array(numPages), (_, index) => (
                                 <div key={`page_${index + 1}`} className="mb-3 d-flex align-items-center">
                                     <input
@@ -54,7 +59,7 @@ function ImagePreview({ pdfPreview, setSelectedPages }: ImagePreviewProps): Reac
                                         style={{ cursor: 'pointer' }}
                                     >
                                         <Page
-                                            pageNumber={index + 1}
+                                            pageNumber={index + 1}  // Page number to display
                                             width={100}
                                         />
                                     </div>
@@ -62,6 +67,8 @@ function ImagePreview({ pdfPreview, setSelectedPages }: ImagePreviewProps): Reac
                             ))}
                         </Document>
                     </div>
+
+                    {/* for larger image view */}
                     <div className="col-md-8">
                         {viewPage !== null ? (
                             <div className="border p-3">

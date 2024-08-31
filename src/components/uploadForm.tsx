@@ -3,19 +3,20 @@ import ImagePreview from './imagePreview';
 import axios from '../axios/axios';
 
 function UploadForm() {
-    const [pdfPreview, setPdfPreview] = useState<string | null>(null);
+    const [pdfPreview, setPdfPreview] = useState<string | null>(null);// to store the URL of the PDF
     const [pdfError, setPdfError] = useState<string>('');
     const [file, setFile] = useState<File | null>(null);
-    const [selectedPages, setSelectedPages] = useState<Set<number>>(new Set());
+    const [selectedPages, setSelectedPages] = useState<Set<number>>(new Set());// to store the set of selected pages from the PDF
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files?.[0];
 
         if (selectedFile && selectedFile.type === 'application/pdf') {
+            //creating a url
             const fileUrl = URL.createObjectURL(selectedFile);
             setPdfPreview(fileUrl);
             setFile(selectedFile);
-            setPdfError('');
+            setPdfError(''); // Clear any previous error messages
         } else {
             setPdfPreview(null);
             setFile(null);
@@ -31,6 +32,7 @@ function UploadForm() {
 
         const formData = new FormData();
         formData.append('file', file);
+        //formdata only append the arrayadn strings.cobert the set to array &then to strings
         formData.append('selectedPages', JSON.stringify(Array.from(selectedPages)));
 
         try {
