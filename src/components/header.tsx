@@ -21,6 +21,8 @@ const Header: React.FC<HeaderProps> = ({ email }) => {
             <Navbar.Collapse id="basic-navbar-nav" role="navigation">
                 <Nav className="ms-auto">
                     <Nav.Link href="/home">Home</Nav.Link>
+                    <Nav.Link href="/YourFiles">Your Files</Nav.Link>
+
                     <Nav.Link href="/aboutUs">About Us</Nav.Link>
                     
                     <div className='d-flex align-items-center'>

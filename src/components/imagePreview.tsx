@@ -17,6 +17,7 @@ function ImagePreview({ pdfPreview, setSelectedPages }: ImagePreviewProps): Reac
     };
 
     const handlePageSelection = (pageNumber: number) => {
+        
         setSelectedPages(prev => {
             //create a set to add the selected pages so that it is unique
             const newSelection = new Set(prev);

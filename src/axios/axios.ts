@@ -5,9 +5,10 @@ import axios, { AxiosInstance } from 'axios';
 interface AccessToken {
   token: string; // Name this based on  cookie structure
 }
+console.log(process.env.apiBaseUrl)
 // Create an Axios instance
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: 'http://localhost:3001', 
+  baseURL: process.env.REACT_APP_apiBaseUrl, 
   timeout: 10000, 
   headers: {
     'Content-Type': 'application/json',

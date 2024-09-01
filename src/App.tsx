@@ -7,6 +7,7 @@ import Login from './pages/login/login';
 import './App.css';
 import Home from './pages/home/home';
 import Profile from './pages/profile/profile';
+import YourFiles from './pages/YourFiles/YourFiles';
 
 const App: React.FC = () => {
   return (
@@ -14,6 +15,8 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/YourFiles" element={<YourFiles />} />
+
         <Route path="/home" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
 

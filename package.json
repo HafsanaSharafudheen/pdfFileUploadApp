@@ -9,6 +9,8 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.5",
     "bootstrap": "^5.3.3",
+    "dotenv": "^16.4.5",
+    "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^4.5.136",
     "react": "^18.3.1",
     "react-beautiful-dnd": "^13.1.1",
@@ -49,6 +51,7 @@
     "@types/react": "^18.3.4",
     "@types/react-beautiful-dnd": "^13.1.8",
     "@types/react-dom": "^18.3.0",
+    "path-browserify": "^1.0.1",
     "typescript": "^4.9.5"
   }
 }

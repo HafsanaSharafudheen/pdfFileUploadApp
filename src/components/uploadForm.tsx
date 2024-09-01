@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ImagePreview from './imagePreview';
 import axios from '../axios/axios';
+import { PDFDocument } from 'pdf-lib';
 
 function UploadForm() {
     const [pdfPreview, setPdfPreview] = useState<string | null>(null);// to store the URL of the PDF
@@ -24,16 +25,48 @@ function UploadForm() {
         }
     };
 
+    const createNewPDFFile = async (file:File)=>{
+        try {
+            // Read the PDF file
+            const fileArrayBuffer = await file.arrayBuffer();
+            const pdfDoc = await PDFDocument.load(fileArrayBuffer);
+
+            // Create a new PDF document
+            const newPdfDoc = await PDFDocument.create();
+
+            // Add selected pages to the new PDF document
+            for (const pageNumber of selectedPages) {
+                const [page] = await newPdfDoc.copyPages(pdfDoc, [pageNumber - 1]);
+                newPdfDoc.addPage(page);
+            }
+
+            // Serialize the new PDF document to bytes
+            const pdfBytes = await newPdfDoc.save();
+
+            // Create a new Blob from the PDF bytes
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const newFile = new File([blob], file.name);
+
+            return newFile;
+
+        } catch (error) {
+            console.error('Error processing or uploading file:', error);
+            alert(error);
+        }
+    }
+
     const handleUpload = async () => {
         if (!file) {
             alert('Please select a file.');
             return;
         }
-
+        var newFile = await createNewPDFFile(file);
+        if (!newFile) {
+            alert('Error occurred during selected pages conversion');
+            return;
+        }
         const formData = new FormData();
-        formData.append('file', file);
-        //formdata only append the arrayadn strings.cobert the set to array &then to strings
-        formData.append('selectedPages', JSON.stringify(Array.from(selectedPages)));
+        formData.append('file', newFile);
 
         try {
             await axios.post('/upload', formData, {
