@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ImagePreview from './imagePreview';
 import axios from '../axios/axios';
 import { PDFDocument } from 'pdf-lib';
-
+import './uploadForm.css'
 function UploadForm() {
     const [pdfPreview, setPdfPreview] = useState<string | null>(null);// to store the URL of the PDF
     const [pdfError, setPdfError] = useState<string>('');
@@ -84,28 +84,30 @@ function UploadForm() {
 
     return (
         <>
-            <h1>Upload PDF file</h1>
-            <form className='form-group'>
-                <input
-                    type="file"
-                    className='form-control'
-                    accept="application/pdf"
-                    onChange={handleFileChange}
-                />
-                {pdfError && <div style={{ color: 'red' }}>{pdfError}</div>}
-                <br />
-                <div className="d-flex justify-content-end m-4">
-                    <button onClick={handleUpload} type="button" className='btn btn-primary btn-lg'>
-                        UPLOAD
-                    </button>
-                </div>
-            </form>
-            {pdfPreview && (
-                <ImagePreview
-                    pdfPreview={pdfPreview}
-                    setSelectedPages={setSelectedPages}
-                />
-            )}
+            <div className="upload-pdf-container">
+            <h1 className="upload-title">Upload PDF File</h1>
+                <form className="form-group">
+                    <input 
+                        type="file"
+                        className="form-control file-input"
+                        accept="application/pdf"
+                        onChange={handleFileChange}
+                    />
+                    {pdfError && <div className="error-message">{pdfError}</div>}
+                    <div className="d-flex justify-content-end mt-3">
+                        <button onClick={handleUpload} type="button" className="btn btn-primary btn-lg">
+                            UPLOAD
+                        </button>
+                    </div>
+                </form>
+                {pdfPreview && (
+                    <ImagePreview
+                        pdfPreview={pdfPreview}
+                        setSelectedPages={setSelectedPages}
+                    />
+                )}
+            </div>
+
         </>
     );
 }

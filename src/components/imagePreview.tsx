@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
-
+import './imagePreview.css';
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 interface ImagePreviewProps {
@@ -39,53 +39,54 @@ function ImagePreview({ pdfPreview, setSelectedPages }: ImagePreviewProps): Reac
 
     return (
         <div className="container mt-3">
-            <h4>View PDF</h4>
-            {pdfPreview ? (
-                <div className="row">
-                    <div className="col-md-4">
-                        <Document
-                            file={pdfPreview}
-                            onLoadSuccess={onDocumentLoadSuccess}
-                        >
-                            {/* render all the samll images  array.from creates an array of pagenumbers from the total page numbers */}
-                            {numPages && Array.from(new Array(numPages), (_, index) => (
-                                <div key={`page_${index + 1}`} className="mb-3 d-flex align-items-center">
-                                    <input
-                                        type="checkbox"
-                                        id={`page_${index + 1}`}
-                                        onChange={() => handlePageSelection(index + 1)}
-                                    />
-                                    <div
-                                        onClick={() => handlePageClick(index + 1)}
-                                        style={{ cursor: 'pointer' }}
-                                    >
-                                        <Page
-                                            pageNumber={index + 1}  // Page number to display
-                                            width={100}
-                                        />
-                                    </div>
-                                </div>
-                            ))}
-                        </Document>
+        <h4 className="text-center">View PDF</h4>
+        {pdfPreview ? (
+          <div className="row">
+            <div className="col-md-12 col-12 thumbnail-column">
+              <Document file={pdfPreview} onLoadSuccess={onDocumentLoadSuccess}>
+                <div className="thumbnail-scroll-container">
+                  {numPages && Array.from(new Array(numPages), (_, index) => (
+                    <div key={`page_${index + 1}`} className="thumbnail-container">
+                      <input
+                        type="checkbox"
+                        id={`page_${index + 1}`}
+                        onChange={() => handlePageSelection(index + 1)}
+                      />
+                      <div
+                        onClick={() => handlePageClick(index + 1)}
+                        className="thumbnail"
+                      >{index + 1}
+                        <Page
+                          pageNumber={index + 1}
+                          width={200}  // Adjust width as needed
+                          height={100}
+                        />
+                      </div>
                     </div>
-
-                    {/* for larger image view */}
-                    <div className="col-md-8">
-                        {viewPage !== null ? (
-                            <div className="border p-3">
-                                <Document file={pdfPreview}>
-                                    <Page pageNumber={viewPage} />
-                                </Document>
-                            </div>
-                        ) : (
-                            <p>Click on a page to view it larger</p>
-                        )}
-                    </div>
+                  ))}
                 </div>
-            ) : (
-                <p>No PDF selected</p>
-            )}
-        </div>
+              </Document>
+            </div>
+      
+            <div className="col-md-9 col-12 large-view">
+              {viewPage !== null ? (
+                <div className="border p-3">
+                  <Document file={pdfPreview}>
+                    <Page pageNumber={viewPage} />
+                  </Document>
+                </div>
+              ) : (
+                <p>Click on a page to view it larger</p>
+              )}
+            </div>
+          </div>
+        ) : (
+          <p>No PDF selected</p>
+        )}
+      </div>
+      
+      
+      
     );
 }
 

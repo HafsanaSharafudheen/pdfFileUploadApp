@@ -1,0 +1,62 @@
+.thumbnail-column {
+    overflow: hidden; /* Hide overflow to avoid vertical scroll */
+  }
+  
+  .thumbnail-scroll-container {
+    display: flex;
+    overflow-x: auto; /* Enable horizontal scroll */
+    white-space: nowrap; /* Prevent line breaks */
+  }
+  
+  .thumbnail-container {
+    display: inline-block;
+    margin-right: 1rem; /* Space between thumbnails */
+    vertical-align: top; /* Align thumbnails at the top */
+  }
+  
+  .thumbnail-container input {
+    margin-right: 0.5rem;
+  }
+  
+  .thumbnail {
+    cursor: pointer;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 2px;
+    background-color: #f8f9fa;
+  }
+  
+  .large-view {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+   
+  }
+  
+  .large-view .border {
+   overflow: auto;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .thumbnail {
+      width: 100%; /* Adjust thumbnail size on mobile */
+    }
+  
+    .large-view {
+      height: auto; /* Remove fixed height on mobile for larger view */
+    }
+  }
+  .thumbnail-column .react-pdf__Page{
+    max-height: 300px;
+    overflow: auto;
+  }
+
+  .react-pdf__Page__textContent {
+    display: none;
+  }
+  
+  .react-pdf__Page__annotations {
+    display: none;
+  }
+  
