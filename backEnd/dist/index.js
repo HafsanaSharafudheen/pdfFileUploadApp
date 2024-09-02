@@ -31,7 +31,7 @@ app.use('/uploads', express_1.default.static(path_1.default.join(__dirname, 'upl
 // Routes
 app.use('/login', loginRoute_1.default);
 app.use('/signup', sigupRoute_1.default);
-app.use(verifyJWTToken_1.verifyJWTToken); // Apply middleware for protected routes
+app.use(verifyJWTToken_1.verifyJWTToken);
 app.use('/profile', profileRoutes_1.default);
 app.use('/upload', uploadRouter_1.default);
 app.use((err, req, res, next) => {
