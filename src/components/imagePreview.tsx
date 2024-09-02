@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import './imagePreview.css';
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
@@ -11,7 +11,8 @@ interface ImagePreviewProps {
 function ImagePreview({ pdfPreview, setSelectedPages }: ImagePreviewProps): React.JSX.Element {
     const [numPages, setNumPages] = useState<number | null>(null);//total number of pages in the PDF
     const [viewPage, setViewPage] = useState<number | null>(null);//current page in larger size
-//once the document is loaded set the total number of pages
+    const targetDivRef = useRef<HTMLDivElement>(null);
+    //once the document is loaded set the total number of pages
     const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
         setNumPages(numPages);
     };
@@ -34,9 +35,12 @@ function ImagePreview({ pdfPreview, setSelectedPages }: ImagePreviewProps): Reac
 //function call in small inage to view large siwe image
     const handlePageClick = (pageNumber: number) => {
         //set the page number to view
+        if (targetDivRef.current) {
+          targetDivRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
         setViewPage(pageNumber);
     };
-
+    
     return (
         <div className="container mt-3">
         <h4 className="text-center">View PDF</h4>
@@ -68,7 +72,7 @@ function ImagePreview({ pdfPreview, setSelectedPages }: ImagePreviewProps): Reac
               </Document>
             </div>
       
-            <div className="col-md-9 col-12 large-view">
+            <div ref={targetDivRef}  className="col-12 large-view mt-5">
               {viewPage !== null ? (
                 <div className="border p-3">
                   <Document file={pdfPreview}>

@@ -9,7 +9,7 @@
   
   .upload-title {
     font-size: 2rem;
-    color: #343a40;
+    color: var(--platinum);
     margin-bottom: 20px;
     text-align: center;
   }
