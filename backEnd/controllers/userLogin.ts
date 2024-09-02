@@ -38,7 +38,6 @@ export const userLogin = async (req: Request, res: Response, next: NextFunction)
         const cookieOptions:CookieOptions = {
             httpOnly: true,
             secure: true,
-            sameSite: 'strict',
             maxAge: 30 * 24 * 60 * 60 * 1000
         };
         console.log("cookieOptions", cookieOptions);
