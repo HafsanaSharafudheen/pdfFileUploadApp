@@ -66,8 +66,9 @@ const userLogin = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         console.log("expiryDate", expiryDate);
         const cookieOptions = {
             httpOnly: true,
-            secure: true,
-            maxAge: 30 * 24 * 60 * 60 * 1000
+            secure: true, // Must be true when sameSite is 'none'
+            sameSite: 'none', // Allows cross-site cookies
+            maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
         };
         console.log("cookieOptions", cookieOptions);
         console.log("Authentication successful for user with email:", email);

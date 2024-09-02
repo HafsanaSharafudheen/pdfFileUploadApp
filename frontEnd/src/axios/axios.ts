@@ -16,29 +16,6 @@ const axiosInstance: AxiosInstance = axios.create({
 
 });
 
-// Optionally, you can add interceptors for request and response
-// axiosInstance.interceptors.request.use(
-//   (config) => {
-//      // Extract access token from cookies (consider error handling)
-//      const accessTokenCookie = document.cookie.split('; ').find((row) =>
-//       row.startsWith('access_token=')
-//     );
-
-//     if (accessTokenCookie) {
-//       const accessToken: AccessToken = {
-//         token: accessTokenCookie.split('=')[1],
-//       };
-//       config.headers.Authorization = `Bearer ${accessToken.token}`;
-//     }
-   
-//     return config;
-//   },
-//   (error) => {
-//     // Handle request error
-//     return Promise.reject(error);
-//   }
-// );
-
 axiosInstance.interceptors.response.use(
   (response) => {
     // Handle the response data

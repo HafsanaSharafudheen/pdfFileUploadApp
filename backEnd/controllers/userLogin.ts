@@ -35,10 +35,11 @@ export const userLogin = async (req: Request, res: Response, next: NextFunction)
         console.log('token', token);
         console.log("expiryDate", expiryDate);
 
-        const cookieOptions:CookieOptions = {
+        const cookieOptions: CookieOptions = {
             httpOnly: true,
-            secure: true,
-            maxAge: 30 * 24 * 60 * 60 * 1000
+            secure: true,        // Must be true when sameSite is 'none'
+            sameSite: 'none',    // Allows cross-site cookies
+            maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
         };
         console.log("cookieOptions", cookieOptions);
 
