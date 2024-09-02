@@ -33,7 +33,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Routes
 app.use('/login', loginRoute);
 app.use('/signup', signUpRoute); 
-app.use(verifyJWTToken); // Apply middleware for protected routes
+app.use(verifyJWTToken); 
 app.use('/profile', profileRoute); 
 app.use('/upload', uploadRoute); 
 
