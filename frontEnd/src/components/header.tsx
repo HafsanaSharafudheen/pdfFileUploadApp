@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
 import { Navbar, Nav } from 'react-bootstrap';
+import { NavLink } from 'react-router-dom';
 
 interface HeaderProps {
     email?: string; 
@@ -16,14 +17,14 @@ const Header: React.FC<HeaderProps> = ({ email }) => {
 
     return (
         <Navbar expand="lg" className='navbar'>
-            <Navbar.Brand href="/home" className='mediflowText'>UploadMyPDF</Navbar.Brand>
+            <Navbar.Brand as ={NavLink} to="/home" className='mediflowText'>UploadMyPDF</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav" role="navigation">
                 <Nav className="ms-auto">
-                    <Nav.Link href="/home">Home</Nav.Link>
-                    <Nav.Link href="/YourFiles">Your Files</Nav.Link>
+                    <Nav.Link as ={NavLink} to="/home">Home</Nav.Link>
+                    <Nav.Link as ={NavLink} to="/YourFiles">Your Files</Nav.Link>
 
-                    <Nav.Link href="/aboutUs">About Us</Nav.Link>
+                    <Nav.Link as ={NavLink} to="/aboutUs">About Us</Nav.Link>
                     
                     <div className='d-flex align-items-center'>
                         <img
