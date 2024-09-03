@@ -19,6 +19,7 @@ const uploadPdf = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         if (!req.file) {
             return res.status(400).send('No file uploaded.');
         }
+        console.log(req.file);
         const filePath = req.file.path;
         const newUpload = new uploadFileModel_1.default({
             userId: req.user.id,

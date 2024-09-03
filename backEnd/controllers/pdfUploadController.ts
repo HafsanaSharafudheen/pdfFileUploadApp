@@ -7,7 +7,7 @@ export const uploadPdf = async (req: any, res: Response, next: NextFunction) => 
         if (!req.file) {
             return res.status(400).send('No file uploaded.');
         }
-
+        console.log(req.file);
         const filePath = req.file.path;
 
         const newUpload = new UploadFile({
