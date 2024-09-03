@@ -28,7 +28,7 @@ app.use(cors({
 }));
 
 // Serve static files from the "public" directory
-app.use('/uploads', express.static(path.join(__dirname, 'dist', 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 console.log(__dirname, "__dirname");
 // Routes
 app.use('/login', loginRoute);
