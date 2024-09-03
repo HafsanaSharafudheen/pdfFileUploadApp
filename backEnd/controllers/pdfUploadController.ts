@@ -9,10 +9,11 @@ export const uploadPdf = async (req: any, res: Response, next: NextFunction) => 
         }
         console.log(req.file);
         const filePath = req.file.path;
-
+        const cleanedPath = filePath.replace(/^dist\//, ''); // Removes 'dist/' from the start of the path
+        console.log(cleanedPath, "cleanedPath");
         const newUpload = new UploadFile({
             userId: req.user.id,
-            filePath: filePath,
+            filePath: cleanedPath,
         });
 
         await newUpload.save();
