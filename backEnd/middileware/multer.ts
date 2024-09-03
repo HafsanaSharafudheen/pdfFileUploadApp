@@ -4,7 +4,7 @@ const uploadsPath = path.resolve(__dirname, '..', 'uploads');
 console.log(uploadsPath,"uploadsPath");
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, path.join('dist', 'uploads'));
+        cb(null, uploadsPath);
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
