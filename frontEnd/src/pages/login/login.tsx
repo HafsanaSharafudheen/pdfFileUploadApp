@@ -4,13 +4,15 @@ import axios from '../../axios/axios'
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (email === '' || password === '') {
+        if (email === '' || password === ''|| phoneNumber==='') {
             setError('Please fill in all fields');
             return;
         }
@@ -19,6 +21,7 @@ function Login() {
             const formData = new FormData();
             formData.append('email', email);
             formData.append('password', password);
+            formData.append('phoneNumber', phoneNumber);
 
            const res= await axios.post('/login', formData);
           
@@ -47,6 +50,17 @@ else{
                             id="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="mb-3 p-2">
+                        <label htmlFor="phoneNumber" className="form-label"> Phone Number</label>
+                        <input
+                            type="phoneNumber"
+                            className="form-control"
+                            id="phoneNumber"
+                            value={phoneNumber}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
                             required
                         />
                     </div>

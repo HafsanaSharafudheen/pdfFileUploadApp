@@ -5,13 +5,14 @@ import User from '../models/userModel';
 interface UserSignup {
     email: string;
     password: string;
+    phoneNumber:number;
     fullName?: string;
    
 }
 
 export const userSignup = async (req: Request, res: Response, next: NextFunction) => {
     const userSignupData: UserSignup = req.body;
-
+console.log(req.body,"req.body")
     const hashedPassword = bcrypt.hashSync(userSignupData.password, 10);
 
     try {
@@ -21,6 +22,7 @@ export const userSignup = async (req: Request, res: Response, next: NextFunction
             const newUser = new User({
                 email: userSignupData.email,
                 password: hashedPassword,
+                phoneNumber:userSignupData.phoneNumber,
                 fullName: userSignupData.fullName,
             });
 

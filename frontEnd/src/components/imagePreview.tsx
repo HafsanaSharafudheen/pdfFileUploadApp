@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import './imagePreview.css';
+//The worker script (pdf.worker.min.mjs) is responsible for handling PDF processing tasks like parsing and rendering PDFs. 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 interface ImagePreviewProps {

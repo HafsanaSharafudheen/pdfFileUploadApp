@@ -5,7 +5,7 @@ import axios from '../../axios/axios';
 function YourFiles() {
     const [tableData, setTableData] = useState([]);
     const [selectedFile, setSelectedFile] = useState('');
-const uploadUrl=process.env.REACT_APP_uploadUrl+'/'
+const uploadUrl=process.env.REACT_APP_uploadUrlDev+'/'
     useEffect(() => {
         const fetchFiles = async () => {
             try {

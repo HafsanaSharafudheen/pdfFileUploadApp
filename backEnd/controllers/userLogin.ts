@@ -2,11 +2,12 @@ import { Request, Response, NextFunction, CookieOptions } from 'express';
 import User from '../models/userModel'; 
 import bcryptjs from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
-
+import dotenv from 'dotenv';
+dotenv.config();
 
 export const userLogin = async (req: Request, res: Response, next: NextFunction) => {
-    const { email, password } = req.body; 
-
+    const { email, password} = req.body; 
+console.log(req.body,"reqqqqqqqqq")
     try {
         const validUser = await User.findOne({ "email":email });
         if (!validUser) {
@@ -26,6 +27,7 @@ export const userLogin = async (req: Request, res: Response, next: NextFunction)
         }
 
         const jwtSecret = process.env.JWT_SECRET;
+        console.log(process.env.JWT_SECRET,"--------process.env.JWT_SECRET");
         if (!jwtSecret) {
             throw new Error("JWT_SECRET is not defined in environment variables");
         }
@@ -37,8 +39,8 @@ export const userLogin = async (req: Request, res: Response, next: NextFunction)
 
         const cookieOptions: CookieOptions = {
             httpOnly: true,
-            secure: true,        // Must be true when sameSite is 'none'
-            sameSite: 'none',    // Allows cross-site cookies
+            secure: false,        // Must be true when sameSite is 'none'
+            sameSite: 'strict', //none    // Allows cross-site cookies
             maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
         };
         console.log("cookieOptions", cookieOptions);

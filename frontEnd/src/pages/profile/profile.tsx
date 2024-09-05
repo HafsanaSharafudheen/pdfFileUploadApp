@@ -10,6 +10,8 @@ function ProfilePage() {
     const [profile, setProfile] = useState({
         fullName: '',
         email: '',
+        phoneNumber:'',
+        password:''
     });
 
     useEffect(() => {
@@ -68,7 +70,31 @@ function ProfilePage() {
                                 required
                             />
                         </div>
-            
+                        <div className="mb-3">
+                            <label htmlFor="phoneNumber" className="form-label">phoneNumber</label>
+                            <input
+                                type="phoneNumber"
+                                className="form-control"
+                                id="phoneNumber"
+                                name="phoneNumber"
+                                value={profile.phoneNumber}
+                                required
+                            />
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="password" className="form-label">password</label>
+                            <input
+                                type="password"
+                                className="form-control"
+                                id="password"
+                                name="password"
+                                value={profile.password}
+                                required
+                            />
+                        </div>
+                        <div>
+                <a href="/change-password" className="text-primary">Change Password</a>
+            </div>
                     </form>
                 </div>
             </div>

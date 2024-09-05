@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
 
 
 interface AuthenticatedRequest extends Request {
@@ -16,8 +18,9 @@ export const verifyJWTToken = (req: AuthenticatedRequest, res: Response, next: N
     if (!token) {
         return res.status(401).json("You need to Login");
     }
+    console.log(process.env.JWT_SECRET,"--------process.env.JWT_SECRET");
 
-    jwt.verify(token, process.env.JWT_SECRET as string, (err: jwt.VerifyErrors | null, user?: any) => {
+    jwt.verify(token, process.env.JWT_SECRET  as string, (err: jwt.VerifyErrors | null, user?: any) => {
         if (err) {
             console.log("Token is not valid");
             return res.status(403).json("Token is not valid");
