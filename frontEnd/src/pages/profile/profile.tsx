@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../../axios/axios'; 
 import { useLocation } from 'react-router-dom';
+import ChangePasswordModal from '../../components/changePasswordModel'; // Adjust path as necessary
 
 function ProfilePage() {
     const location = useLocation();
@@ -10,15 +11,27 @@ function ProfilePage() {
     const [profile, setProfile] = useState({
         fullName: '',
         email: '',
-        phoneNumber:'',
-        password:''
+        phoneNumber: '',
+        password: ''
     });
+    
+    const [showModal, setShowModal] = useState(false); // Controls modal visibility
 
+    // Open the modal when the "Change Password" link is clicked
+    const handleModalOpen = () => {
+        setShowModal(true);
+    };
+
+    // Close the modal when done or cancelled
+    const handleModalClose = () => {
+        setShowModal(false);
+    };
+
+    // Fetch the profile details when the component mounts
     useEffect(() => {
         const fetchProfile = async () => {
             try {
                 const response = await axios.get(`/profile?email=${email}`);
-                
                 setProfile(response.data.userDetails);
             } catch (error) {
                 console.error('Failed to fetch profile:', error);
@@ -30,24 +43,21 @@ function ProfilePage() {
         }
     }, [email]);
 
-   
-    
-
     return (
         <div className="container mt-4">
             <div className="row">
                 <div className="col-md-4">
                     <div className="text-center">
-                    <img 
-            src={defaultProfilePicture}
-            alt="Profile"
-            className="profile-image" 
-        />
+                        <img 
+                            src={defaultProfilePicture}
+                            alt="Profile"
+                            className="profile-image" 
+                        />
                         <h2 className="mt-2">{profile.fullName}</h2>
                     </div>
                 </div>
                 <div className="col-md-8">
-                    <form >
+                    <form>
                         <div className="mb-3">
                             <label htmlFor="name" className="form-label">Name</label>
                             <input
@@ -56,7 +66,7 @@ function ProfilePage() {
                                 id="name"
                                 name="fullName"
                                 value={profile.fullName}
-                                required
+                                readOnly
                             />
                         </div>
                         <div className="mb-3">
@@ -67,34 +77,42 @@ function ProfilePage() {
                                 id="email"
                                 name="email"
                                 value={profile.email}
-                                required
+                                readOnly
                             />
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="phoneNumber" className="form-label">phoneNumber</label>
+                            <label htmlFor="phoneNumber" className="form-label">Phone Number</label>
                             <input
-                                type="phoneNumber"
+                                type="text"
                                 className="form-control"
                                 id="phoneNumber"
                                 name="phoneNumber"
                                 value={profile.phoneNumber}
-                                required
+                                readOnly
                             />
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="password" className="form-label">password</label>
+                            <label htmlFor="password" className="form-label">Password</label>
                             <input
                                 type="password"
                                 className="form-control"
                                 id="password"
                                 name="password"
                                 value={profile.password}
-                                required
+                                readOnly
                             />
+                            <small>
+                                <a href="#" className="text-primary" onClick={handleModalOpen}>
+                                    Change Password
+                                </a>
+                            </small>
                         </div>
-                        <div>
-                <a href="/change-password" className="text-primary">Change Password</a>
-            </div>
+
+                        <ChangePasswordModal
+                            show={showModal}
+                            onHide={handleModalClose}
+                            currentPassword={profile.password} 
+                        />
                     </form>
                 </div>
             </div>

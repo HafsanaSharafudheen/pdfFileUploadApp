@@ -6,7 +6,7 @@ import React from 'react';
 interface ChangePasswordModalProps {
     show: boolean;
     onHide: () => void;
-    currentPassword: string;
+   currentPassword: string;
 }
 
 const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ show, onHide, currentPassword }) => {
@@ -16,7 +16,7 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ show, onHide,
 
     const handleSaveChanges = async () => {
         try {
-            const response = await axios.post('/user/changePassword', {
+            const response = await axios.post('/profile/changePasword', {
                 oldPassword,
                 newPassword
             });
@@ -35,12 +35,12 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ show, onHide,
             <Modal.Header closeButton>
                 <Modal.Title>Change Password</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body  style={{color:'black'}} >
                 {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
                 <div className="mb-3">
-                    <label htmlFor="oldPassword" className="form-label">Old Password</label>
+                    <label htmlFor="oldPassword"className="form-label">Old Password</label>
                     <input
-                        type="password"
+                        type="text"
                         className="form-control"
                         id="oldPassword"
                         value={oldPassword}
@@ -51,7 +51,7 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ show, onHide,
                 <div className="mb-3">
                     <label htmlFor="newPassword" className="form-label">New Password</label>
                     <input
-                        type="password"
+                        type="text"
                         className="form-control"
                         id="newPassword"
                         value={newPassword}

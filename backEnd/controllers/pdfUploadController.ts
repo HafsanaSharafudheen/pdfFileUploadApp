@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import UploadFile from '../models/uploadFileModel';
-import User from '../models/userModel';
 
 export const uploadPdf = async (req: any, res: Response, next: NextFunction) => {
     try {
@@ -9,7 +8,8 @@ export const uploadPdf = async (req: any, res: Response, next: NextFunction) => 
         }
         console.log(req.file);
         const filePath = req.file.path;
-        const cleanedPath = filePath.replace(/^dist\//, ''); // Removes 'dist/' from the start of the path
+        const cleanedPath=filePath
+        //const cleanedPath = filePath.replace(/^dist\//, ''); // Removes 'dist/' from the start of the path
         console.log(cleanedPath, "cleanedPath");
         const newUpload = new UploadFile({
             userId: req.user.id,
