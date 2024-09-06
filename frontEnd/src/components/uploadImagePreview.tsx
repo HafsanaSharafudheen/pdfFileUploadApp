@@ -4,13 +4,12 @@ import './imagePreview.css';
 // The worker script (pdf.worker.min.mjs) is responsible for handling PDF processing tasks like parsing and rendering PDFs.
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
-interface ImagePreviewProps {
+interface UploadImagePreviewProps {
     pdfPreview: string | null;
-    setSelectedPages: React.Dispatch<React.SetStateAction<Set<number>>>;
     setTitles: React.Dispatch<React.SetStateAction<{ [key: number]: string }>>; // Pass the setTitles function
 }
 
-function ImagePreview({ pdfPreview, setSelectedPages, setTitles }: ImagePreviewProps): React.JSX.Element {
+function UploadImagePreview({ pdfPreview, setTitles }: UploadImagePreviewProps): React.JSX.Element {
     const [numPages, setNumPages] = useState<number | null>(null); // total number of pages in the PDF
     const [viewPage, setViewPage] = useState<number | null>(null); // current page in larger size
     const [localTitles, setLocalTitles] = useState<{ [key: number]: string }>({}); // store titles for each page
@@ -20,29 +19,11 @@ function ImagePreview({ pdfPreview, setSelectedPages, setTitles }: ImagePreviewP
         setNumPages(numPages);
     };
 
-    const handlePageSelection = (pageNumber: number) => {
-        setSelectedPages(prev => {
-            const newSelection = new Set(prev);
-            if (newSelection.has(pageNumber)) {
-                newSelection.delete(pageNumber);
-            } else {
-                newSelection.add(pageNumber);
-            }
-            return newSelection;
-        });
-    };
-
     const handlePageClick = (pageNumber: number) => {
         if (targetDivRef.current) {
             targetDivRef.current.scrollIntoView({ behavior: 'smooth' });
         }
         setViewPage(pageNumber);
-    };
-
-    const handleTitleChange = (pageNumber: number, title: string) => {
-        const updatedTitles = { ...localTitles, [pageNumber]: title };
-        setLocalTitles(updatedTitles);
-        setTitles(updatedTitles); // Pass titles to parent component
     };
 
     return (
@@ -55,30 +36,17 @@ function ImagePreview({ pdfPreview, setSelectedPages, setTitles }: ImagePreviewP
                             <div className="thumbnail-scroll-container">
                                 {numPages && Array.from(new Array(numPages), (_, index) => (
                                     <div key={`page_${index + 1}`} className="thumbnail-container">
-                                        <input
-                                            type="checkbox"
-                                            id={`page_${index + 1}`}
-                                            onChange={() => handlePageSelection(index + 1)}
-                                        />
                                         <div
                                             onClick={() => handlePageClick(index + 1)}
                                             className="thumbnail"
                                         >
-                                            {index + 1}
+                                            <h5 className="text-center mb-2">{localTitles[index + 1] || `Page ${index + 1}`}</h5>
                                             <Page
                                                 pageNumber={index + 1}
                                                 width={200}
                                                 height={100}
                                             />
                                         </div>
-                                        {/* Text box for title input */}
-                                        <input
-                                            type="text"
-                                            className="form-control mt-2"
-                                            placeholder={`Enter title for page ${index + 1}`}
-                                            value={localTitles[index + 1] || ""}
-                                            onChange={(e) => handleTitleChange(index + 1, e.target.value)}
-                                        />
                                     </div>
                                 ))}
                             </div>
@@ -105,4 +73,4 @@ function ImagePreview({ pdfPreview, setSelectedPages, setTitles }: ImagePreviewP
     );
 }
 
-export default ImagePreview;
+export default UploadImagePreview;

@@ -1,19 +1,27 @@
-import mongoose, { Schema, Document, ObjectId } from 'mongoose';
+import mongoose from 'mongoose';
 
-export interface IUploadFile extends Document {
-  userId: ObjectId;
-  filePath: string;
-  createdAt: Date;
-}
+const UploadFileSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
+    filePath: {
+        type: String,
+        required: true,
+    },
+    titles: [{
+        pageNumber: {
+            type: Number,
+            required: true,
+        },
+        title: {
+            type: String,
+            required: true,
+        }
+    }],
+}, { timestamps: true });
 
-const UploadFileSchema: Schema<IUploadFile> = new Schema(
-  {
-    userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
-    filePath: { type: String, required: true },
-  },
-  { timestamps: true }
-);
-
-const UploadFile = mongoose.model<IUploadFile>('UploadFile', UploadFileSchema);
+const UploadFile = mongoose.model('UploadFile', UploadFileSchema);
 
 export default UploadFile;

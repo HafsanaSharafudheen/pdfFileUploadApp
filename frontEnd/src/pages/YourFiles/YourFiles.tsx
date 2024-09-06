@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../../components/header';
 import axios from '../../axios/axios';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import ImagePreview from  '../../components/imagePreview'
+import UploadImagePreview from '../../components/uploadImagePreview';
 
 function YourFiles() {
-    const [tableData, setTableData] = useState([]);
-    const [selectedFile, setSelectedFile] = useState('');
-const uploadUrl=process.env.REACT_APP_uploadUrlDev+'/'
+    const [tableData, setTableData] = useState<any[]>([]);
+    const [selectedFile, setSelectedFile] = useState<{ filePath: string, title: string } | null>(null);
+    const [selectedPages, setSelectedPages] = useState<Set<number>>(new Set());
+    const [titles, setTitles] = useState<{ [key: number]: string }>({});
+    const uploadUrl = process.env.REACT_APP_uploadUrlDev + '/';
+
     useEffect(() => {
         const fetchFiles = async () => {
             try {
@@ -19,10 +25,24 @@ const uploadUrl=process.env.REACT_APP_uploadUrlDev+'/'
         fetchFiles();
     }, []);
 
-    function handleFileClick(filePath: any, e:any ): void {
-        e.preventDefault(); 
-        setSelectedFile(filePath);
+    function handleFileClick(file: any, e: any): void {
+        e.preventDefault();
+        setSelectedFile({ filePath: file.filePath, title: file.titles.title });
     }
+
+    const handleEdit = (fileId: string) => {
+        console.log(`Edit file with ID: ${fileId}`);
+    };
+
+    const handleDelete = async (fileId: string) => {
+        try {
+            await axios.delete(`/upload/deleteFile/${fileId}`);
+            setTableData(prevData => prevData.filter(file => file._id !== fileId));
+            setSelectedFile(null);
+        } catch (error) {
+            console.error('Error deleting file:', error);
+        }
+    };
 
     return (
         <>
@@ -36,38 +56,48 @@ const uploadUrl=process.env.REACT_APP_uploadUrlDev+'/'
                                     <tr>
                                         <th>Created At</th>
                                         <th>PDF</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {tableData.map((file:any, index) => (
+                                    {tableData.map((file, index) => (
                                         <tr key={index}>
                                             <td>{new Date(file.createdAt).toLocaleDateString()}</td>
                                             <td>
                                                 <button
-                                                   
-                                                    onClick={(e) => handleFileClick(file.filePath, e)}
+                                                    onClick={(e) => handleFileClick(file, e)}
                                                 >
-                                                    View PDF
+                                                    {file.title} View PDF
                                                 </button>
                                             </td>
-                                           
+                                            <td>
+                                                <button
+                                                    onClick={() => handleEdit(file._id)}
+                                                    className="btn btn-warning btn-sm mr-2"
+                                                >
+                                                    <FaEdit />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(file._id)}
+                                                    className="btn btn-danger btn-sm"
+                                                >
+                                                    <FaTrash />
+                                                </button>
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
                     </div>
+
                     {/* PDF Preview Column */}
                     <div className="col-md-6">
                         {selectedFile && (
-                            <div className="pdf-preview">
-                                <iframe 
-                                    src={uploadUrl+selectedFile} 
-                                    width="100%" 
-                                    height="600px" 
-                                    title="PDF Preview"
-                                />
-                            </div>
+                            <UploadImagePreview
+                                pdfPreview={uploadUrl + selectedFile.filePath}
+                                setTitles={setTitles} 
+                            />
                         )}
                     </div>
                 </div>

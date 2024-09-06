@@ -10,9 +10,20 @@ export const uploadPdf = async (req: any, res: Response, next: NextFunction) => 
         const filePath = req.file.path;
         const cleanedPath = filePath.replace(/^dist\//, ''); // Removes 'dist/' from the start of the path
         console.log(cleanedPath, "cleanedPath");
+
+        const titles: { pageNumber: number, title: string }[] = [];
+
+        Object.keys(req.body).forEach(key => {
+            if (key.startsWith('title_page_')) {
+                const pageNumber = Number(key.replace('title_page_', ''));
+                const title = req.body[key];
+                titles.push({ pageNumber, title });
+            }
+        });
         const newUpload = new UploadFile({
             userId: req.user.id,
             filePath: cleanedPath,
+            titles:titles
         });
 
         await newUpload.save();

@@ -8,6 +8,7 @@ function UploadForm() {
     const [pdfError, setPdfError] = useState<string>('');
     const [file, setFile] = useState<File | null>(null);
     const [selectedPages, setSelectedPages] = useState<Set<number>>(new Set());// to store the set of selected pages from the PDF
+    const [titles, setTitles] = useState<{ [key: number]: string }>({}); // Store titles for each selected page
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files?.[0];
@@ -67,6 +68,9 @@ function UploadForm() {
         }
         const formData = new FormData();
         formData.append('file', newFile);
+        Object.keys(titles).forEach(pageNumber => {
+            formData.append(`title_page_${pageNumber}`, titles[Number(pageNumber)]);
+        });
 
         try {
             await axios.post('/upload', formData, {
@@ -104,6 +108,7 @@ function UploadForm() {
                     <ImagePreview
                         pdfPreview={pdfPreview}
                         setSelectedPages={setSelectedPages}
+                        setTitles={setTitles}
                     />
                 )}
             </div>
