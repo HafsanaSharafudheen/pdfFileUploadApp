@@ -9,11 +9,15 @@ interface ImagePreviewProps {
     setSelectedPages: React.Dispatch<React.SetStateAction<Set<number>>>;
 }
 
+
+
 function ImagePreview({ pdfPreview, setSelectedPages }: ImagePreviewProps): React.JSX.Element {
     const [numPages, setNumPages] = useState<number | null>(null);//total number of pages in the PDF
     const [viewPage, setViewPage] = useState<number | null>(null);//current page in larger size
+    const [titles, setTitles] = useState<{ [key: number]: string }>({}); // store titles for each page
+
     const targetDivRef = useRef<HTMLDivElement>(null);
-    //once the document is loaded set the total number of pages
+
     const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
         setNumPages(numPages);
     };
@@ -41,7 +45,13 @@ function ImagePreview({ pdfPreview, setSelectedPages }: ImagePreviewProps): Reac
         }
         setViewPage(pageNumber);
     };
-    
+      // Handle title input changes for each page
+      const handleTitleChange = (pageNumber: number, title: string) => {
+        setTitles(prevTitles => ({
+            ...prevTitles,
+            [pageNumber]: title,
+        }));
+    };
     return (
         <div className="container mt-3">
         <h4 className="text-center">View PDF</h4>
@@ -63,10 +73,17 @@ function ImagePreview({ pdfPreview, setSelectedPages }: ImagePreviewProps): Reac
                       >{index + 1}
                         <Page
                           pageNumber={index + 1}
-                          width={200}  // Adjust width as needed
+                          width={200} 
                           height={100}
                         />
                       </div>
+                      <input
+                                            type="text"
+                                            className="form-control mt-2"
+                                            placeholder={`Enter title for page ${index + 1}`}
+                                            value={titles[index + 1] || ""}
+                                            onChange={(e) => handleTitleChange(index + 1, e.target.value)}
+                                        />
                     </div>
                   ))}
                 </div>
@@ -76,6 +93,8 @@ function ImagePreview({ pdfPreview, setSelectedPages }: ImagePreviewProps): Reac
             <div ref={targetDivRef}  className="col-12 large-view mt-5">
               {viewPage !== null ? (
                 <div className="border p-3">
+                 <h5 className="text-center">{titles[viewPage] || `Page ${viewPage}`}</h5>
+
                   <Document file={pdfPreview}>
                     <Page pageNumber={viewPage} />
                   </Document>
