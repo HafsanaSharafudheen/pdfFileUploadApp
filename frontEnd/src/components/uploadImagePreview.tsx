@@ -14,17 +14,20 @@ interface UploadImagePreviewProps {
 function UploadImagePreview({ pdfPreview, setTitles, titles }: UploadImagePreviewProps): React.JSX.Element {
     const [numPages, setNumPages] = useState<number | null>(null); // total number of pages in the PDF
     const [viewPage, setViewPage] = useState<number | null>(null); // current page in larger size
+    
+    // useRef is used to create a ref that is attached to a div element.
+    // Initially, targetDivRef is set to null, but it will later be assigned the actual DOM element.
     const targetDivRef = useRef<HTMLDivElement>(null);
 
     const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-        setNumPages(numPages);
+        setNumPages(numPages);// Update the number of pages
     };
 
     const handlePageClick = (pageNumber: number) => {
         if (targetDivRef.current) {
             targetDivRef.current.scrollIntoView({ behavior: 'smooth' });
         }
-        setViewPage(pageNumber);
+        setViewPage(pageNumber);// Set the page to view in larger size
     };
 
     return (
@@ -34,14 +37,15 @@ function UploadImagePreview({ pdfPreview, setTitles, titles }: UploadImagePrevie
                 <div className="row">
                     <div className="col-md-12 col-12 thumbnail-column">
                         <Document file={pdfPreview} onLoadSuccess={onDocumentLoadSuccess}>
-                            <div className="thumbnail-scroll-container">
+                            <div className="thumbnail-scroll-container">{/* Container for thumbnails */}
                                 {numPages && Array.from(new Array(numPages), (_, index) => (
-                                    <div key={`page_${index + 1}`} className="thumbnail-container">
+                                    <div key={`page_${index + 1}`} className="thumbnail-container">{/* Container for scrolling through thumbnails */}
                                         <div
                                             onClick={() => handlePageClick(index + 1)}
                                             className="thumbnail"
                                         >
                                             <h5 className="text-center mb-2">
+                                                {/* Title for the larger view or default page number */}
                                                 {titles[index + 1] || `Page ${index + 1}`}
                                             </h5>
                                             <Page

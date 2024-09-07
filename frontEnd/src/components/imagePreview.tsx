@@ -15,13 +15,13 @@ interface ImagePreviewProps {
 }
 
 interface DraggablePageProps {
-    pageNumber: number;
-    index: number;
-    movePage: (dragIndex: number, hoverIndex: number) => void;
-    localTitles: { [key: number]: string };
-    handleTitleChange: (pageNumber: number, title: string) => void;
-    handlePageSelection: (pageNumber: number) => void;
-    handlePageClick: (pageNumber: number) => void;
+    pageNumber: number; // Current page number
+    index: number;// Index in the list of pages
+    movePage: (dragIndex: number, hoverIndex: number) => void;// Function to move pages in the list
+    localTitles: { [key: number]: string };// Titles for each page
+    handleTitleChange: (pageNumber: number, title: string) => void;// Function to update the title of a page
+    handlePageSelection: (pageNumber: number) => void;// Function to select or deselect a page
+    handlePageClick: (pageNumber: number) => void;// Function to handle clicking on a page
 }
 
 const DraggablePage: React.FC<DraggablePageProps> = ({
@@ -33,17 +33,20 @@ const DraggablePage: React.FC<DraggablePageProps> = ({
     handlePageSelection,
     handlePageClick
 }) => {
+        // Set up drag-and-drop for the page thumbnail
+
     const [, dragRef] = useDrag({
-        type: 'PAGE',
-        item: { index },
+        type: 'PAGE',// Define the type of item being dragged
+        item: { index },// Pass the index of the dragged item
     });
+    // Set up drop target for the page thumbnail
 
     const [, dropRef] = useDrop({
         accept: 'PAGE',
         hover(item: { index: number }) {
             if (item.index !== index) {
-                movePage(item.index, index);
-                item.index = index;
+                movePage(item.index, index);// Move page when hovering over a new position
+                item.index = index; // Update the item's index
             }
         },
     });
@@ -82,12 +85,13 @@ function ImagePreview({ pdfPreview, setSelectedPages, setTitles }: ImagePreviewP
     const [viewPage, setViewPage] = useState<number | null>(null);
     const [localTitles, setLocalTitles] = useState<{ [key: number]: string }>({});
     const [pages, setPages] = useState<number[]>([]);
+    // Ref to scroll to the larger view of the selected page
 
     const targetDivRef = useRef<HTMLDivElement>(null);
 
     const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-        setNumPages(numPages);
-        setPages(Array.from({ length: numPages }, (_, i) => i + 1));
+        setNumPages(numPages);// Store the total number of pages
+        setPages(Array.from({ length: numPages }, (_, i) => i + 1));// Create an array of page numbers
     };
 
     const handlePageSelection = (pageNumber: number) => {
@@ -99,7 +103,7 @@ function ImagePreview({ pdfPreview, setSelectedPages, setTitles }: ImagePreviewP
     };
 
     const handlePageClick = (pageNumber: number) => {
-        targetDivRef.current?.scrollIntoView({ behavior: 'smooth' });
+        targetDivRef.current?.scrollIntoView({ behavior: 'smooth' });// Scroll to the larger view
         setViewPage(pageNumber);
     };
 
@@ -108,6 +112,7 @@ function ImagePreview({ pdfPreview, setSelectedPages, setTitles }: ImagePreviewP
         setLocalTitles(updatedTitles);
         setTitles(updatedTitles);
     };
+    // Reorder pages when dragging and dropping
 
     const movePage = (dragIndex: number, hoverIndex: number) => {
         const updatedPages = [...pages];
