@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import UploadFile from '../models/uploadFileModel';
+const { ObjectId } = require('mongodb');
 
 export const uploadPdf = async (req: any, res: Response, next: NextFunction) => {
     try {
@@ -51,3 +52,24 @@ export const allFiles = async (req: any, res: Response, next: NextFunction) => {
         res.status(500).json({ message: 'Internal server error.' });
     }
 };
+
+export const deleteFile=async(req: any, res: Response, next:NextFunction)=>{
+    const { fileId } = req.query;
+    const objectId = new ObjectId(fileId);
+
+    console.log(fileId,"fileid")
+    console.log(objectId,"objectId");
+    try {
+        const file = await UploadFile.findOneAndUpdate(
+            { _id: objectId },
+            { $set: { isDeleted: true } }, 
+        );
+        if (!file) {
+            return res.status(404).json({ message: 'File not found' });
+        }
+        res.status(200).json({ message: 'File deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting file:', error);
+        res.status(500).json({ message: 'Error deleting file' });
+    }
+}

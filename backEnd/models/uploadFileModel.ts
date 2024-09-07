@@ -10,6 +10,7 @@ const UploadFileSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    isDeleted:{type: Boolean, default: false},
     titles: [{
         pageNumber: {
             type: Number,
