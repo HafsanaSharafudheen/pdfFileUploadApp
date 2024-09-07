@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import './imagePreview.css';
+
 // The worker script (pdf.worker.min.mjs) is responsible for handling PDF processing tasks like parsing and rendering PDFs.
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -8,10 +9,9 @@ interface UploadImagePreviewProps {
     pdfPreview: string | null;
     setTitles: React.Dispatch<React.SetStateAction<{ [key: number]: string }>>;
     titles: { [key: number]: string };
-
 }
 
-function UploadImagePreview({ pdfPreview, setTitles,titles }: UploadImagePreviewProps): React.JSX.Element {
+function UploadImagePreview({ pdfPreview, setTitles, titles }: UploadImagePreviewProps): React.JSX.Element {
     const [numPages, setNumPages] = useState<number | null>(null); // total number of pages in the PDF
     const [viewPage, setViewPage] = useState<number | null>(null); // current page in larger size
     const targetDivRef = useRef<HTMLDivElement>(null);
@@ -41,10 +41,10 @@ function UploadImagePreview({ pdfPreview, setTitles,titles }: UploadImagePreview
                                             onClick={() => handlePageClick(index + 1)}
                                             className="thumbnail"
                                         >
- <h5 className="text-center mb-2">
+                                            <h5 className="text-center mb-2">
                                                 {titles[index + 1] || `Page ${index + 1}`}
-                                            </h5>                                         
-                                               <Page
+                                            </h5>
+                                            <Page
                                                 pageNumber={index + 1}
                                                 width={200}
                                                 height={100}
@@ -59,9 +59,10 @@ function UploadImagePreview({ pdfPreview, setTitles,titles }: UploadImagePreview
                     <div ref={targetDivRef} className="col-12 large-view mt-5">
                         {viewPage !== null ? (
                             <div className="border p-3">
-  <h5 className="text-center">
+                                <h5 className="text-center">
                                     {titles[viewPage] || `Page ${viewPage}`}
-                                </h5>                                <Document file={pdfPreview}>
+                                </h5>
+                                <Document file={pdfPreview}>
                                     <Page pageNumber={viewPage} />
                                 </Document>
                             </div>
