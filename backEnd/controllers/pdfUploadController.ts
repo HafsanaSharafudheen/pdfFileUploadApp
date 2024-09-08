@@ -73,3 +73,40 @@ export const deleteFile=async(req: any, res: Response, next:NextFunction)=>{
         res.status(500).json({ message: 'Error deleting file' });
     }
 }
+
+
+export const updateFile = async (req: Request, res: Response, next: NextFunction) => {
+    // Extract file information
+    const file = req.file; // Assuming you use multer for file uploads
+    const { fileId, titles } = req.body;
+
+    if (!file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const filePath = file.path; // File path from multer
+
+    try {
+        const updatedFile = await UploadFile.findOneAndUpdate(
+            { _id: fileId },
+            {
+                $set: {
+                    filePath: filePath,
+                    titles: Object.keys(titles).map((pageNumber) => ({
+                        pageNumber: parseInt(pageNumber),
+                        title: titles[pageNumber],
+                    })),
+                },
+            },
+            { new: true }
+        );
+
+        if (!updatedFile) {
+            return res.status(404).json({ message: 'File not found' });
+        }
+
+        res.status(200).json({ message: 'File updated successfully', file: updatedFile });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating file', error });
+    }
+}

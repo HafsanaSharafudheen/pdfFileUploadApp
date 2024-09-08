@@ -153,6 +153,8 @@ function ImagePreview({ pdfPreview, setSelectedPages, setTitles }: ImagePreviewP
                                     <Document file={pdfPreview}>
                                         <Page pageNumber={viewPage} />
                                     </Document>
+                                    {/* <iframe src={pdfPreview} ></iframe> */}
+
                                 </div>
                             ) : (
                                 <p>Click on a page to view it larger</p>
