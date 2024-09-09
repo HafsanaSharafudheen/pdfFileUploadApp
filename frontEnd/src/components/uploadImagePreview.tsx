@@ -22,7 +22,6 @@ const UploadImagePreview: React.FC<UploadImagePreviewProps> = ({ pdfPreview,file
     const targetDivRef = useRef<HTMLDivElement>(null);
     const [selectedFile, setSelectedFile] = useState<{ filePath: string, titles: { [key: number]: string } } | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingPage, setEditingPage] = useState<number | null>(null);  // For tracking the page being edited
     const [pageNumber, setPageNumber] = useState<number | null>(null);  // For tracking the page being edited
     const [pdf, setPdf] = useState<any | null>(null);  // For tracking the page being edited
     // const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
@@ -38,8 +37,8 @@ const UploadImagePreview: React.FC<UploadImagePreviewProps> = ({ pdfPreview,file
   
 
     const handleEdit = (pageNumber: number) => {
+        console.log('Editing page number:', pageNumber);
         setPageNumber(pageNumber);
-        setEditingPage(pageNumber);
         setIsModalOpen(true);
     };
 
@@ -51,11 +50,11 @@ const UploadImagePreview: React.FC<UploadImagePreviewProps> = ({ pdfPreview,file
     };
 
 
-    const handlePageClickPdf = async () =>{
-        const otherPdf = await pdfjs.getDocument('http://localhost:3001/uploads/1725689478249-306926793.pdf').promise;
-        setPdf(await otherPdf.getPage(1));
-        console.log(otherPdf);
-    }
+    // const handlePageClickPdf = async () =>{
+    //     const otherPdf = await pdfjs.getDocument('http://localhost:3001/uploads/1725689478249-306926793.pdf').promise;
+    //     setPdf(await otherPdf.getPage(1));
+    //     console.log(otherPdf);
+    // }
 
     return (
         <div className="container mt-3">

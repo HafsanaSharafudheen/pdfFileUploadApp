@@ -3,8 +3,10 @@ import { Modal, Button } from 'react-bootstrap';
 import { pdfjs, Document, Page } from 'react-pdf';
 import axios from '../axios/axios';
 import Swal from 'sweetalert2';
-const { PDFDocument } = require('pdf-lib');
+import UploadImagePreview from './uploadImagePreview';
+import { useNavigate } from 'react-router-dom';
 
+const { PDFDocument } = require('pdf-lib');
 interface EditModalProps {
   show: boolean;
   onHide: () => void;
@@ -21,12 +23,14 @@ interface EditModalProps {
   fileLocation,
   fileId,
 }) => {
-  const [pdfFile, setPdfFile] = useState<File | null>(null); // PDF file
+  const [pdfFile, setPdfFile] = useState<File | null>(null); 
   const [pdfError, setPdfError] = useState<string>(''); // Error message
   const [selectedPage, setSelectedPage] = useState<number | null>(null); // Selected page
   const [numPages, setNumPages] = useState<number | null>(null); // Number of pages
   const [pages, setPages] = useState<number[]>([]); // Pages array
   const [titles, setTitles] = useState<string>(''); 
+  const navigate=useNavigate()
+
 
   useEffect(() => {
     if (pdfFile) {
@@ -82,7 +86,7 @@ interface EditModalProps {
       formData.append('file', newFile);
       formData.append('fileId', fileId);
       formData.append('titles', titles);
-      formData.append('pageNumber', selectedPage.toString());
+      formData.append('pageNumber', pageNumber.toString());
 
       await axios.post('/upload/updateFile', formData, {
         headers: {
@@ -91,6 +95,7 @@ interface EditModalProps {
       });
 
       Swal.fire('Success', 'File updated successfully', 'success');
+      onHide();
     } catch (error) {
       console.error('Error uploading file:', error);
       Swal.fire('Error', 'Failed to upload file', 'error');
@@ -112,6 +117,8 @@ const modifyPdf = async (oldFilePath:string, newFilePath:File, selectedPageNumbe
 
   const [pageToInsert] = await pdfOld.copyPages(pdfNew, [selectedPageNumber - 1]);
   pdfOld.insertPage(pageNumber, pageToInsert);
+  pdfOld.removePage(pageNumber-1);
+
   const pdfBytes = await pdfOld.save();  
   const blob = new Blob([pdfBytes], { type: 'application/pdf' });
   const newFile = new File([blob], pdfOld.name);

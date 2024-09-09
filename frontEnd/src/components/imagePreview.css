@@ -1,5 +1,5 @@
 .thumbnail-column {
-    overflow: hidden; /* Hide overflow to avoid vertical scroll */
+    overflow: hidden; 
   }
   
   .thumbnail-scroll-container {
