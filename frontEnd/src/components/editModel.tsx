@@ -2,22 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { pdfjs, Document, Page } from 'react-pdf';
 import axios from '../axios/axios';
+import Swal from 'sweetalert2';
+const { PDFDocument } = require('pdf-lib');
 
 interface EditModalProps {
   show: boolean;
   onHide: () => void;
   file: { filePath: string };
   pageNumber: number;
-  handleSave: () => void;
   fileId: string;
+  fileLocation:string
 }
-
-const EditModal: React.FC<EditModalProps> = ({
+ const EditModal: React.FC<EditModalProps> = ({
   show,
   onHide,
   file,
   pageNumber,
-  handleSave,
+  fileLocation,
   fileId,
 }) => {
   const [pdfFile, setPdfFile] = useState<File | null>(null); // PDF file
@@ -25,7 +26,7 @@ const EditModal: React.FC<EditModalProps> = ({
   const [selectedPage, setSelectedPage] = useState<number | null>(null); // Selected page
   const [numPages, setNumPages] = useState<number | null>(null); // Number of pages
   const [pages, setPages] = useState<number[]>([]); // Pages array
-  const [titles, setTitles] = useState<{ [key: number]: string }>({}); // Titles for each page
+  const [titles, setTitles] = useState<string>(''); 
 
   useEffect(() => {
     if (pdfFile) {
@@ -33,7 +34,7 @@ const EditModal: React.FC<EditModalProps> = ({
       setSelectedPage(null);
       setNumPages(null);
       setPages([]);
-      setTitles({});
+      setTitles('');
     }
   }, [pdfFile]);
 
@@ -59,29 +60,63 @@ const EditModal: React.FC<EditModalProps> = ({
   };
 
   const handleTitleChange = (page: number, title: string) => {
-    setTitles(prevTitles => ({ ...prevTitles, [page]: title }));
+    if (selectedPage === page) {
+      setTitles(title);
+    }
   };
 
   const handleSaveChanges = async () => {
-    if (pdfFile) {
-      const formData = new FormData();
-      formData.append('pdfFile', pdfFile);
+    if (!pdfFile || selectedPage === null) {
+      alert('Please select a file and a page.');
+      return;
+    }
 
-      formData.append('fileId', fileId);
-      formData.append('titles', JSON.stringify(titles));
-
-      try {
-        await axios.post('/upload/updateFile', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        handleSave();
-      } catch (error) {
-        console.error('Error saving file:', error);
+    try {
+      const newFile = await modifyPdf(file.filePath, pdfFile, selectedPage);
+      if (!newFile) {
+        alert('Error occurred during PDF modification');
+        return;
       }
+
+      const formData = new FormData();
+      formData.append('file', newFile);
+      formData.append('fileId', fileId);
+      formData.append('titles', titles);
+      formData.append('pageNumber', selectedPage.toString());
+
+      await axios.post('/upload/updateFile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      Swal.fire('Success', 'File updated successfully', 'success');
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      Swal.fire('Error', 'Failed to upload file', 'error');
     }
   };
+
+
+  
+
+const modifyPdf = async (oldFilePath:string, newFilePath:File, selectedPageNumber:number) => {
+
+  const oldPdfResponse = await fetch(oldFilePath);
+  const oldPdfArrayBuffer = await oldPdfResponse.arrayBuffer();
+  const pdfOld = await PDFDocument.load(oldPdfArrayBuffer);
+  
+  // Read the new PDF file from the File object (convert it to an ArrayBuffer first)
+  const arrayBuffer = await newFilePath.arrayBuffer();
+  const pdfNew = await PDFDocument.load(arrayBuffer); 
+
+  const [pageToInsert] = await pdfOld.copyPages(pdfNew, [selectedPageNumber - 1]);
+  pdfOld.insertPage(pageNumber, pageToInsert);
+  const pdfBytes = await pdfOld.save();  
+  const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+  const newFile = new File([blob], pdfOld.name);
+  return newFile;
+};
 
   return (
     <Modal show={show} onHide={onHide} size="lg" centered>
@@ -122,7 +157,7 @@ const EditModal: React.FC<EditModalProps> = ({
                     <input
                       type="text"
                       placeholder="Title for this page"
-                      value={titles[page] || ''}
+                      value={titles || ''}
                       onChange={(e) => handleTitleChange(page, e.target.value)}
                     />
                   )}

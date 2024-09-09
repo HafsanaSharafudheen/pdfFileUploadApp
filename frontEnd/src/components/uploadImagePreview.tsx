@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import './imagePreview.css';
 import { FaEdit } from 'react-icons/fa';
-import EditModal from '../components/editModel';
+import EditModal from '../components/editModel'; 
 import axios from '../axios/axios';
 import Swal from 'sweetalert2';
 import './uploadImagePreview.css'
@@ -13,9 +13,10 @@ interface UploadImagePreviewProps {
     setTitles: React.Dispatch<React.SetStateAction<{ [key: number]: string }>>;
     titles: { [key: number]: string };
     fileId:string|null;
+    fileLocation:string|null;
 }
 
-const UploadImagePreview: React.FC<UploadImagePreviewProps> = ({ pdfPreview, setTitles,fileId, titles }) => {
+const UploadImagePreview: React.FC<UploadImagePreviewProps> = ({ pdfPreview,fileLocation, setTitles,fileId, titles }) => {
     const [numPages, setNumPages] = useState<number | null>(null);
     const [viewPage, setViewPage] = useState<number | null>(null);
     const targetDivRef = useRef<HTMLDivElement>(null);
@@ -34,19 +35,7 @@ const UploadImagePreview: React.FC<UploadImagePreviewProps> = ({ pdfPreview, set
         setNumPages(pdf.numPages);                
     });
 
-    const handleSaveChanges = async () => {
-        try {
-            await axios.post('/upload/updateFile', {
-                filePath: selectedFile?.filePath,
-                titles: titles,
-            });
-            Swal.fire('Success', 'File updated successfully', 'success');
-            setIsModalOpen(false); // Close modal after saving
-        } catch (error) {
-            console.error('Error saving changes:', error);
-            Swal.fire('Error', 'Failed to save changes', 'error');
-        }
-    };
+  
 
     const handleEdit = (pageNumber: number) => {
         setPageNumber(pageNumber);
@@ -102,10 +91,7 @@ const UploadImagePreview: React.FC<UploadImagePreviewProps> = ({ pdfPreview, set
                                 ))}
                             </div>
                         </Document>
-                        PDF 2
-                        
-                        <button onClick={() => handlePageClickPdf()} >Move 1 page to above from below</button>
-                        
+                       
                     </div>
 
                     <div ref={targetDivRef} className="col-12 large-view mt-5">
@@ -136,12 +122,12 @@ const UploadImagePreview: React.FC<UploadImagePreviewProps> = ({ pdfPreview, set
                 <div>No PDF preview available</div>
             )}
 
-{isModalOpen && pdfPreview && pageNumber && fileId &&(
+{isModalOpen && pdfPreview && pageNumber && fileId && fileLocation &&(
     <EditModal
         show={isModalOpen}
         onHide={() => setIsModalOpen(false)}
-        handleSave={handleSaveChanges}
         fileId={fileId}
+        fileLocation={fileLocation}
         file={{ filePath: pdfPreview }} 
         pageNumber={pageNumber} 
     />

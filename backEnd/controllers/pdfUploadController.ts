@@ -76,26 +76,31 @@ export const deleteFile=async(req: any, res: Response, next:NextFunction)=>{
 
 
 export const updateFile = async (req: Request, res: Response, next: NextFunction) => {
-    // Extract file information
-    const file = req.file; // Assuming you use multer for file uploads
-    const { fileId, titles } = req.body;
+    console.log(req.body,"req.body");
 
-    if (!file) {
+    const { fileId,titles,pageNumber } = req.body;
+    const objectId = new ObjectId(fileId);
+
+    if (!objectId) {
         return res.status(400).json({ message: 'No file uploaded' });
     }
 
-    const filePath = file.path; // File path from multer
+    console.log(objectId,"field Id");
+
+    if (!req.file) {
+        return res.status(400).send('No file uploaded.');
+    }
+    const filePath = req.file.path;
+    const cleanedPath = filePath.replace(/^dist\//, ''); 
+console.log(req.file,"requestfile")
 
     try {
         const updatedFile = await UploadFile.findOneAndUpdate(
-            { _id: fileId },
+            { _id: objectId },
             {
                 $set: {
-                    filePath: filePath,
-                    titles: Object.keys(titles).map((pageNumber) => ({
-                        pageNumber: parseInt(pageNumber),
-                        title: titles[pageNumber],
-                    })),
+                    filePath: cleanedPath,
+                   
                 },
             },
             { new: true }
@@ -104,9 +109,13 @@ export const updateFile = async (req: Request, res: Response, next: NextFunction
         if (!updatedFile) {
             return res.status(404).json({ message: 'File not found' });
         }
-
+        const result = await UploadFile.updateOne(
+            { _id: objectId, "titles.pageNumber": pageNumber },
+      { $set: { "titles.$.title": titles } }
+          );
         res.status(200).json({ message: 'File updated successfully', file: updatedFile });
     } catch (error) {
         res.status(500).json({ message: 'Error updating file', error });
     }
+
 }

@@ -80,7 +80,8 @@ function YourFiles() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {tableData.map((file, index) => (
+                                    {tableData.filter((file) => !file.isDeleted) 
+                                        .map((file, index) => (
                                         <tr key={index}>
                                             <td>{new Date(file.createdAt).toLocaleDateString()}</td>
                                             <td>
@@ -111,6 +112,7 @@ function YourFiles() {
                             <UploadImagePreview
                                 pdfPreview={uploadUrl + selectedFile.filePath}
                                 setTitles={setTitles} 
+                                fileLocation={selectedFile.filePath}
                                 titles={selectedFile.titles}
                                 fileId={selectedFile.fileId} 
                             />
