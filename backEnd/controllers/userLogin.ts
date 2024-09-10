@@ -39,7 +39,7 @@ console.log(req.body,"reqqqqqqqqq")
 
         const cookieOptions: CookieOptions = {
             httpOnly: true,
-            secure: false,        // Must be true when sameSite is 'none'
+            secure: process.env.ENV=='PROD'?true:false,        // Must be true when sameSite is 'none'
             sameSite: 'strict', //none    // Allows cross-site cookies
             maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
         };
