@@ -9,7 +9,7 @@ function YourFiles() {
     const [tableData, setTableData] = useState<any[]>([]);
     const [selectedFile, setSelectedFile] = useState<{ filePath: string, titles: { [key: number]: string },fileId:string } | null>(null);
     const [titles, setTitles] = useState<{ [key: number]: string }>({});
-    const uploadUrl = process.env.REACT_APP_uploadUrlDev + '/';
+    const uploadUrl =process.env.REACT_APP_ENV=='prod'? process.env.REACT_APP_uploadUrl:process.env.REACT_APP_uploadUrlDev + '/';
 
     useEffect(() => {
         const fetchFiles = async () => {
