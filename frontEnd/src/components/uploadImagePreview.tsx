@@ -6,6 +6,7 @@ import EditModal from '../components/editModel';
 import axios from '../axios/axios';
 import Swal from 'sweetalert2';
 import './uploadImagePreview.css'
+import { useNavigate } from 'react-router-dom';
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 interface UploadImagePreviewProps {
@@ -14,9 +15,17 @@ interface UploadImagePreviewProps {
     titles: { [key: number]: string };
     fileId:string|null;
     fileLocation:string|null;
+    refreshParent:() => void;
 }
 
-const UploadImagePreview: React.FC<UploadImagePreviewProps> = ({ pdfPreview,fileLocation, setTitles,fileId, titles }) => {
+const UploadImagePreview: React.FC<UploadImagePreviewProps> = 
+({ pdfPreview,
+    fileLocation, 
+    setTitles,
+    fileId, 
+    titles ,
+    refreshParent
+}) => {
     const [numPages, setNumPages] = useState<number | null>(null);
     const [viewPage, setViewPage] = useState<number | null>(null);
     const targetDivRef = useRef<HTMLDivElement>(null);
@@ -27,7 +36,7 @@ const UploadImagePreview: React.FC<UploadImagePreviewProps> = ({ pdfPreview,file
     // const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     //     setNumPages(numPages);
     // };
-
+const navigate=useNavigate()
     const onDocumentLoadSuccess = (async (pdf: any) => {
         console.log(pdf)
         //setPdf(pdf.getPage(1));
@@ -49,6 +58,14 @@ const UploadImagePreview: React.FC<UploadImagePreviewProps> = ({ pdfPreview,file
         setViewPage(pageNumber);
     };
 
+
+    function popUpClose ()  {
+
+        setIsModalOpen(false)
+        refreshParent()
+       
+
+    }
 
     // const handlePageClickPdf = async () =>{
     //     const otherPdf = await pdfjs.getDocument('http://localhost:3001/uploads/1725689478249-306926793.pdf').promise;
@@ -124,11 +141,12 @@ const UploadImagePreview: React.FC<UploadImagePreviewProps> = ({ pdfPreview,file
 {isModalOpen && pdfPreview && pageNumber && fileId && fileLocation &&(
     <EditModal
         show={isModalOpen}
-        onHide={() => setIsModalOpen(false)}
+        onHide={popUpClose}
         fileId={fileId}
         fileLocation={fileLocation}
         file={{ filePath: pdfPreview }} 
         pageNumber={pageNumber} 
+        
     />
 )}
 

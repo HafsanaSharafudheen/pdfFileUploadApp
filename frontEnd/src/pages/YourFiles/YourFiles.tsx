@@ -12,18 +12,16 @@ function YourFiles() {
     const uploadUrl =process.env.REACT_APP_ENV=='prod'? process.env.REACT_APP_uploadUrl:process.env.REACT_APP_uploadUrlDev + '/';
 
     useEffect(() => {
-        const fetchFiles = async () => {
-            try {
-                const response = await axios.get('/upload/yourFiles');
-                setTableData(response.data.files);
-            } catch (error) {
-                console.error('Error fetching files:', error);
-            }
-        };
-
         fetchFiles();
     }, []);
-
+    const fetchFiles = async () => {
+        try {
+            const response = await axios.get('/upload/yourFiles');
+            setTableData(response.data.files);
+        } catch (error) {
+            console.error('Error fetching files:', error);
+        }
+    };
     const handleFileClick = (file: any, e: any): void => {
         e.preventDefault();
         if (!file.titles || !Array.isArray(file.titles)) {
@@ -64,6 +62,13 @@ function YourFiles() {
         }
     };
 
+    function refreshParent(): void {
+        fetchFiles();
+        setSelectedFile(null);
+
+
+    }
+
     return (
         <>
             <Header />
@@ -83,7 +88,7 @@ function YourFiles() {
                                     {tableData.filter((file) => !file.isDeleted) 
                                         .map((file, index) => (
                                         <tr key={index}>
-                                            <td>{new Date(file.createdAt).toLocaleDateString()}</td>
+                                            <td>{new Date(file.createdAt).toLocaleString()}</td>
                                             <td>
                                                 <button
                                                     onClick={(e) => handleFileClick(file, e)}
@@ -115,6 +120,7 @@ function YourFiles() {
                                 fileLocation={selectedFile.filePath}
                                 titles={selectedFile.titles}
                                 fileId={selectedFile.fileId} 
+                                refreshParent={refreshParent}
                             />
                         )}
                     </div>

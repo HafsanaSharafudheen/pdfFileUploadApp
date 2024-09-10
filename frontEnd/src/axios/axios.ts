@@ -2,7 +2,9 @@ import axios, { AxiosInstance } from 'axios';
 
 
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL:process.env.REACT_APP_ENV=='prod'? process.env.REACT_APP_apiBaseUrl:process.env.REACT_APP_apiBaseUrlDev,
+  baseURL:process.env.REACT_APP_ENV === 'prod'? 
+                process.env.REACT_APP_apiBaseUrl:
+                process.env.REACT_APP_apiBaseUrlDev,
   timeout: 10000, 
   headers: {
     'Content-Type': 'application/json',

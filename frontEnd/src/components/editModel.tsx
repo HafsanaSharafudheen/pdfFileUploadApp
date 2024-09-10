@@ -3,7 +3,6 @@ import { Modal, Button } from 'react-bootstrap';
 import { pdfjs, Document, Page } from 'react-pdf';
 import axios from '../axios/axios';
 import Swal from 'sweetalert2';
-import UploadImagePreview from './uploadImagePreview';
 import { useNavigate } from 'react-router-dom';
 
 const { PDFDocument } = require('pdf-lib');
@@ -95,7 +94,9 @@ interface EditModalProps {
       });
 
       Swal.fire('Success', 'File updated successfully', 'success');
+
       onHide();
+
     } catch (error) {
       console.error('Error uploading file:', error);
       Swal.fire('Error', 'Failed to upload file', 'error');
