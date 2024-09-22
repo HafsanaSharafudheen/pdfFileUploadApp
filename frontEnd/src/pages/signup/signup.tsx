@@ -28,12 +28,15 @@ const Signup: React.FC = () => {
             formData.append('confirmPassword', confirmPassword);
 
             try {
-                await axios.post('/signup', formData);
-                navigate('/');
+                const response = await axios.post('/signup', formData);
+                if (response.status === 201) {
+                    navigate('/');
+                }
             } catch (error) {
                 console.error('Signup error:', error); 
                 setError('Signup failed. Please try again.');
             }
+            
         }
     };
 
