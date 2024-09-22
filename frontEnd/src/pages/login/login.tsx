@@ -36,7 +36,9 @@ else{
             setError('Login failed. Please try again.');
         }
     };
-
+const handleSignUp = () => {
+        navigate('/signup');
+    };
     return (
         <div className="main-div-container">
             <div className="loginContainer">
@@ -80,8 +82,8 @@ else{
                         <button type="submit" className="btn btn-primary">Login</button>
                     </div>
                     <p className='text-center mt-3'>
-                        New user? <a href="/signup">Create an account</a>
-                    </p>
+            New user? <a href="#" onClick={handleSignUp}>Create an account</a>
+        </p>
                 </form>
             </div>
         </div>
